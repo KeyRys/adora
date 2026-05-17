@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"backend/internal/domain"
 
@@ -26,13 +27,17 @@ func (r *CheckoutRepository) GetCartItemsByUserID(userID string) ([]domain.Check
 			ci.product_id,
 			r.seller_id,
 			r.price
-		FROM cart_items ci
+		FROM carts c
+		JOIN cart_items ci
+		    ON ci.cart_id = c.id
 		JOIN rabbits r
 			ON ci.product_id = r.id
-		WHERE ci.user_id = $1::uuid
+		WHERE c.user_id = $1::uuid
 		`,
 		userID,
 	)
+	fmt.Println("userID in repo", userID)
+	fmt.Println("cart items query:", rows)
 
 	if err != nil {
 		return nil, err
@@ -105,16 +110,16 @@ func (r *CheckoutRepository) CreateOrderItem(orderID string, item domain.Checkou
 	return err
 }
 
-func (r *CheckoutRepository) ClearCart(cartID string) error {
+func (r *CheckoutRepository) ClearCart(userID string) error {
 	ctx := context.Background()
 
 	_, err := r.DB.Exec(
 		ctx,
 		`
-		DELETE FROM cart_items
-		WHERE cart_id = $1::uuid
+		DELETE FROM carts c
+		WHERE c.user_id = $1::uuid
 		`,
-		cartID,
+		userID,
 	)
 
 	return err

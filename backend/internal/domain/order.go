@@ -20,3 +20,18 @@ type CheckoutItem struct {
 	SellerID string `json:"seller_id"`
 	Price    int    `json:"price"`
 }
+
+type BuyerOrder struct {
+	OrderID    string `json:"order_id"`
+	RabbitName string `json:"rabbit_name"`
+	Price      int    `json:"price"`
+	Status     string `json:"status"`
+}
+
+type SellerOrder struct {
+	OrderID    string `json:"order_id"`
+	BuyerName  string `json:"buyer_name"`
+	RabbitName string `json:"rabbit_name"`
+	Price      int    `json:"price"`
+	Status     string `json:"status"`
+}

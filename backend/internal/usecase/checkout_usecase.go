@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"backend/internal/repository"
+	"fmt"
 )
 
 type CheckoutUsecase struct {
@@ -28,12 +29,14 @@ func (u *CheckoutUsecase) Checkout(userID string) error {
 	for _, item := range items {
 		total += item.Price
 	}
+	fmt.Println("totalPrice", total)
 
 	orderID, err :=
 		u.CheckoutRepo.CreateOrder(
 			userID,
 			total,
 		)
+	fmt.Println("orderID", orderID)
 
 	if err != nil {
 		return err
@@ -50,6 +53,7 @@ func (u *CheckoutUsecase) Checkout(userID string) error {
 			return err
 		}
 	}
+	fmt.Println("Created order items for user", userID)
 
 	err = u.CheckoutRepo.ClearCart(userID)
 

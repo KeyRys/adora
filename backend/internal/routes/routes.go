@@ -37,6 +37,12 @@ func SetupRoutes(router *gin.Engine, db *pgx.Conn, secret string) {
 	checkoutRepo := repository.NewCheckoutRepository(db)
 	checkoutUsecase := usecase.NewCheckoutUsecase(checkoutRepo)
 	checkoutHandler := http.NewCheckoutHandler(checkoutUsecase)
+	//order
+	orderRepo := repository.NewOrderRepository(db)
+	orderUsecase := usecase.NewOrderUsecase(orderRepo)
+	orderHandler := http.NewOrderHandler(orderUsecase)
+	sellerOrderUsecase := usecase.NewSellerOrderUsecase(orderRepo)
+	sellerOrderHandler := http.NewSellerOrderHandler(sellerOrderUsecase)
 
 	//----routes----
 	//product
@@ -70,4 +76,8 @@ func SetupRoutes(router *gin.Engine, db *pgx.Conn, secret string) {
 	protected.DELETE("/cart/item/:id", cartHandler.RemoveItem)
 	//checkout
 	protected.POST("/checkout", checkoutHandler.Checkout)
+	//order
+	protected.GET("/orders/me", orderHandler.GetBuyerOrders)
+	protected.GET("/orders/seller", sellerOrderHandler.GetSellerOrders)
+	protected.PUT("/orders/:id", sellerOrderHandler.UpdateOrderStatus)
 }
