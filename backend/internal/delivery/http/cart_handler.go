@@ -39,8 +39,8 @@ func (h *CartHandler) AddToCart(c *gin.Context) {
 }
 
 func (h *CartHandler) GetCart(c *gin.Context) {
-	userID := c.GetString("uid")
-
+	userID := c.GetString("id")
+	//fmt.Println("Fetching cart items for user ID:", userID)
 	data, err := h.Usecase.GetCart(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

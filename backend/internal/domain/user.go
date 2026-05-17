@@ -7,8 +7,9 @@ type User struct {
 }
 
 type Profile struct {
-	ID    string `json:"id"`
-	UID   string `json:"uid"`
-	Name  string `json:"name"`
-	Phone string `json:"phone"`
+	ID      string `json:"id"`
+	UID     string `json:"uid"`
+	Name    string `json:"name"`
+	Phone   string `json:"phone"`
+	Address string `json:"address"`
 }

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -12,7 +11,7 @@ import (
 func AuthMiddleware(secret string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		fmt.Println("Mid SECRET:", secret)
+		//fmt.Println("Mid SECRET:", secret)
 		// 1. Get Authorization header
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {

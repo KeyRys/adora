@@ -16,7 +16,7 @@ func NewProductRepository(db *pgx.Conn) *ProductRepository {
 }
 
 func (r *ProductRepository) GetAll() ([]domain.Product, error) {
-	rows, err := r.DB.Query(context.Background(), "SELECT id, name, breed, price FROM rabbits")
+	rows, err := r.DB.Query(context.Background(), "SELECT id, seller_id, (Select phone from profiles where user_id = (Select user_id from sellers where id = seller_id::uuid))as phone, name, breed, gender, age, color, price, purpose, health_status FROM rabbits WHERE health_status = 'healthy'")
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +26,7 @@ func (r *ProductRepository) GetAll() ([]domain.Product, error) {
 
 	for rows.Next() {
 		var p domain.Product
-		err := rows.Scan(&p.ID, &p.Name, &p.Breed, &p.Price)
+		err := rows.Scan(&p.ID, &p.SellerID, &p.Phone, &p.Name, &p.Breed, &p.Gender, &p.Age, &p.Color, &p.Price, &p.Purpose, &p.HealthStatus)
 		if err != nil {
 			return nil, err
 		}
@@ -37,10 +37,10 @@ func (r *ProductRepository) GetAll() ([]domain.Product, error) {
 }
 
 func (r *ProductRepository) GetByID(id string) (*domain.Product, error) {
-	row := r.DB.QueryRow(context.Background(), "SELECT id, seller_id, name, breed, weight, color, gender, price FROM rabbits WHERE id = $1", id)
+	row := r.DB.QueryRow(context.Background(), "SELECT id, seller_id, (Select phone from profiles where user_id = (Select user_id from sellers where id = seller_id::uuid))as phone, name, breed, age, weight, color, gender, price, description, purpose, health_status FROM rabbits WHERE id = $1", id)
 
 	var p domain.Product
-	err := row.Scan(&p.ID, &p.SellerID, &p.Name, &p.Breed, &p.Weight, &p.Color, &p.Gender, &p.Price)
+	err := row.Scan(&p.ID, &p.SellerID, &p.Phone, &p.Name, &p.Breed, &p.Age, &p.Weight, &p.Color, &p.Gender, &p.Price, &p.Description, &p.Purpose, &p.HealthStatus)
 	if err != nil {
 		return nil, err
 	}

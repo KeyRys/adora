@@ -53,17 +53,18 @@ func (r *CartRepository) AddItem(cartID, productID string) error {
 	return err
 }
 
-func (r *CartRepository) GetCartItems(cartID string) ([]domain.CartItemWithProduct, error) {
+func (r *CartRepository) GetCartItems(userID string) ([]domain.CartItemWithProduct, error) {
 	ctx := context.Background()
 
 	rows, err := r.DB.Query(ctx, `
-		SELECT ci.id, p.id, p.name, p.price
+		SELECT ci.id, p.id, p.name, p.breed, p.price
 		FROM cart_items ci
 		JOIN rabbits p ON ci.product_id = p.id
-		WHERE ci.cart_id = $1
-	`, cartID)
+		WHERE ci.cart_id = $1 :: uuid
+	`, userID)
 
 	if err != nil {
+
 		return nil, err
 	}
 	defer rows.Close()
@@ -77,6 +78,7 @@ func (r *CartRepository) GetCartItems(cartID string) ([]domain.CartItemWithProdu
 			&item.ID,
 			&item.Product.ID,
 			&item.Product.Name,
+			&item.Product.Breed,
 			&item.Product.Price,
 		)
 
@@ -94,7 +96,7 @@ func (r *CartRepository) RemoveItem(itemID string) error {
 	ctx := context.Background()
 
 	_, err := r.DB.Exec(ctx,
-		"DELETE FROM cart_items WHERE id=$1",
+		"DELETE FROM cart_items WHERE id=$1::uuid",
 		itemID,
 	)
 
@@ -105,7 +107,7 @@ func (r *CartRepository) ClearCart(cartID string) error {
 	ctx := context.Background()
 
 	_, err := r.DB.Exec(ctx,
-		"DELETE FROM cart_items WHERE cart_id=$1",
+		"DELETE FROM cart_items WHERE cart_id=$1::uuid",
 		cartID,
 	)
 
