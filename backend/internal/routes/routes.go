@@ -43,6 +43,10 @@ func SetupRoutes(router *gin.Engine, db *pgx.Conn, secret string) {
 	orderHandler := http.NewOrderHandler(orderUsecase)
 	sellerOrderUsecase := usecase.NewSellerOrderUsecase(orderRepo)
 	sellerOrderHandler := http.NewSellerOrderHandler(sellerOrderUsecase)
+	//relation
+	relationRepo := repository.NewRabbitRelationRepository(db)
+	relationUsecase := usecase.NewRabbitRelationUsecase(relationRepo)
+	relationHandler := http.NewRabbitRelationHandler(relationUsecase)
 
 	//----routes----
 	//product
@@ -70,6 +74,7 @@ func SetupRoutes(router *gin.Engine, db *pgx.Conn, secret string) {
 	protected.DELETE("/seller/rabbits/:id", sellerHandler.DeleteRabbit)
 	//profile
 	protected.GET("/profile/me", profileHandler.GetMyProfile)
+	protected.PUT("/profile", profileHandler.UpdateProfile)
 	//cart
 	protected.POST("/cart/add", cartHandler.AddToCart)
 	protected.GET("/cart", cartHandler.GetCart)
@@ -80,4 +85,7 @@ func SetupRoutes(router *gin.Engine, db *pgx.Conn, secret string) {
 	protected.GET("/orders/me", orderHandler.GetBuyerOrders)
 	protected.GET("/orders/seller", sellerOrderHandler.GetSellerOrders)
 	protected.PUT("/orders/:id", sellerOrderHandler.UpdateOrderStatus)
+	//relation
+	protected.POST("/seller/relations", relationHandler.CreateRelation)
+	protected.GET("/seller/relations", relationHandler.GetSellerRelation)
 }

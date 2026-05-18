@@ -14,6 +14,7 @@ func NewProductUsecase(r *repository.ProductRepository) *ProductUsecase {
 }
 
 func (u *ProductUsecase) GetProducts() ([]domain.Product, error) {
+
 	return u.Repo.GetAll()
 }
 

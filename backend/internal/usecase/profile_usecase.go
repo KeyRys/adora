@@ -21,3 +21,16 @@ func (u *ProfileUsecase) GetProfile(
 
 	return u.Repo.GetProfileByUserID(userID)
 }
+
+func (u *ProfileUsecase) UpdateProfile(
+	userID string,
+	phone string,
+	address string,
+) error {
+
+	return u.Repo.UpdateProfile(
+		userID,
+		phone,
+		address,
+	)
+}

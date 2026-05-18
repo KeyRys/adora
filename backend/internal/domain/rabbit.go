@@ -20,3 +20,13 @@ type Rabbit struct {
 
 	Status string `json:"status"`
 }
+type RabbitRelation struct {
+	ID       string `json:"id"`
+	ParentID string `json:"parent_id"`
+	ChildID  string `json:"child_id"`
+}
+
+type RabbitRelationResponse struct {
+	ParentName string `json:"parent_name"`
+	ChildName  string `json:"child_name"`
+}

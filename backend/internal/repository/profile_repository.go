@@ -62,3 +62,25 @@ func (r *ProfileRepository) GetProfileByUserID(
 
 	return &profile, nil
 }
+
+func (r *ProfileRepository) UpdateProfile(
+	userID string,
+	phone string,
+	address string,
+) error {
+
+	_, err := r.DB.Exec(
+		context.Background(),
+		`
+		UPDATE profiles
+		SET
+			phone = $1,
+			address = $2
+		WHERE user_id = $3::uuid
+		`,
+		phone,
+		address,
+		userID,
+	)
+	return err
+}
