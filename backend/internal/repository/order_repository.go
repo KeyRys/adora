@@ -68,7 +68,7 @@ func (r *OrderRepository) GetBuyerOrders(buyerID string) ([]domain.BuyerOrder, e
 			order,
 		)
 	}
-
+	//fmt.Println(orders)
 	return orders, nil
 }
 
@@ -79,7 +79,7 @@ func (r *OrderRepository) GetSellerOrders(userID string) ([]domain.SellerOrder, 
 		`
 		SELECT
 			o.id,
-			p.name,
+			p.name buyer_name,
 			rb.name,
 			oi.price,
 			o.status
@@ -95,7 +95,7 @@ func (r *OrderRepository) GetSellerOrders(userID string) ([]domain.SellerOrder, 
 		JOIN profiles p
 			ON o.user_id = p.user_id
 
-		WHERE oi.seller_id = $1::uuid
+		WHERE oi.seller_id = (Select id from sellers where user_id = $1::uuid)
 		`,
 		userID,
 	)
@@ -129,7 +129,7 @@ func (r *OrderRepository) GetSellerOrders(userID string) ([]domain.SellerOrder, 
 			order,
 		)
 	}
-
+	//fmt.Println(orders)
 	return orders, nil
 }
 
